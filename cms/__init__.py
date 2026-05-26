@@ -1,6 +1,38 @@
 import os as _os
 from flask import Flask
 from config import Config
+import jinja2
+
+
+class ThemeLoader(jinja2.BaseLoader):
+    """Custom Jinja2 loader that dynamically adds active theme's template directory."""
+
+    def __init__(self, app):
+        self.app = app
+
+    def get_source(self, environment, template):
+        from cms.theme_system import get_active_theme
+        theme = get_active_theme()
+        base_sp = [_os.path.join(self.app.root_path, 'templates')]
+        tmpl_dir = _os.path.join(theme['dir'], 'templates') if theme.get('dir') else None
+        if tmpl_dir and _os.path.isdir(tmpl_dir):
+            searchpath = [tmpl_dir] + base_sp
+        else:
+            searchpath = base_sp
+        for sp in searchpath:
+            filename = _os.path.join(sp, template)
+            if _os.path.isfile(filename):
+                with open(filename, 'rb') as f:
+                    contents = f.read().decode('utf-8')
+                mtime = _os.path.getmtime(filename)
+
+                def uptodate():
+                    try:
+                        return _os.path.getmtime(filename) == mtime
+                    except OSError:
+                        return False
+                return contents, filename, uptodate
+        raise jinja2.TemplateNotFound(template)
 
 
 def create_app(config_class=Config):
@@ -8,32 +40,25 @@ def create_app(config_class=Config):
                 static_folder='../static',
                 static_url_path='/static')
     app.config.from_object(config_class)
-
-    # Disable Jinja2 template cache so theme switching takes effect immediately
-    app.jinja_env.cache_size = 0
-
+    
     # Initialize extensions + theme + plugins
     from cms.extensions import db, login_manager, csrf, migrate
     from cms.hooks import do_action
     from cms.theme_system import theme_static_url, get_active_theme
 
-    # Dynamic theme template switching (runtime, no restart needed)
-    @app.before_request
-    def apply_theme_templates():
-        from cms.theme_system import get_active_theme
-        theme = get_active_theme()
-        sp = list(app.jinja_loader.searchpath)
-        tmpl_dir = _os.path.join(theme['dir'], 'templates') if theme and theme.get('dir') else None
-        if tmpl_dir and _os.path.isdir(tmpl_dir):
-            new_sp = [tmpl_dir] + [p for p in sp if p != tmpl_dir]
-            app.jinja_loader.searchpath = new_sp
-        else:
-            app.jinja_loader.searchpath = [p for p in sp if 'themes' not in p]
-
     db.init_app(app)
     login_manager.init_app(app)
     csrf.init_app(app)
     migrate.init_app(app, db)
+
+    # Override the Jinja2 loader AFTER all extensions have been initialized.
+    # Extensions (csrf, migrate, etc.) rebuild app.jinja_env during init_app,
+    # which would discard any loader we set before them.
+    app.jinja_env.loader = ThemeLoader(app)
+    # Disable template caching: set cache to None so every render_template
+    # forces get_source() to be called, allowing real-time theme switching
+    app.jinja_env.cache = None
+    app.jinja_env.auto_reload = True
 
     # Register blueprints
     from cms.public.views import public_bp
