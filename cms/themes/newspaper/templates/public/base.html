@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if title %}{{ title }} - {% endif %}{{ settings.site_name or 'CMS' }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap');
+        body { font-family: 'Noto Serif SC', Georgia, serif; color: #1a1a1a; background: #f5f2ed; margin: 0; }
+        .site-wrap { max-width: 1100px; margin: 0 auto; background: #fff; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
+        .top-bar { background: #1a1a2e; color: #fff; padding: 8px 30px; font-size: 0.8em; display: flex; justify-content: space-between; }
+        header { padding: 30px 30px 10px; text-align: center; border-bottom: 3px double #1a1a2e; }
+        header h1 { margin: 0; font-size: 2.8em; letter-spacing: 4px; }
+        header h1 a { color: #1a1a2e; text-decoration: none; }
+        header .tagline { color: #999; font-size: 0.85em; margin-top: 5px; }
+        nav.main-nav { padding: 12px 30px; border-bottom: 1px solid #ddd; text-align: center; }
+        nav.main-nav a { display: inline-block; padding: 4px 18px; color: #1a1a2e; text-decoration: none; font-size: 0.9em; border-right: 1px solid #ddd; }
+        nav.main-nav a:last-child { border-right: none; }
+        nav.main-nav a:hover { text-decoration: underline; }
+        .content-wrap { display: flex; padding: 20px 30px; gap: 30px; }
+        .main-col { flex: 2; min-width: 0; }
+        .side-col { flex: 1; min-width: 250px; }
+        .hero-article { margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px solid #1a1a2e; }
+        .hero-article h2 { font-size: 1.8em; margin: 0 0 10px; }
+        .hero-article h2 a { color: #1a1a2e; text-decoration: none; }
+        .article-list article { padding: 15px 0; border-bottom: 1px solid #eee; }
+        .article-list article:last-child { border-bottom: none; }
+        .article-list h3 { margin: 0 0 6px; font-size: 1.1em; }
+        .article-list h3 a { color: #1a1a2e; text-decoration: none; }
+        .article-list h3 a:hover { text-decoration: underline; }
+        .post-meta { color: #999; font-size: 0.8em; }
+        .side-col .widget { margin-bottom: 25px; }
+        .side-col .widget h3 { font-size: 1em; border-bottom: 2px solid #1a1a2e; padding-bottom: 5px; text-transform: uppercase; letter-spacing: 2px; }
+        .side-col .widget ul { list-style: none; padding: 0; }
+        .side-col .widget ul li { padding: 5px 0; }
+        .side-col .widget ul li a { color: #1a1a2e; text-decoration: none; }
+        .side-col .widget ul li a:hover { text-decoration: underline; }
+        .post-detail { padding: 20px 30px; }
+        .post-detail h1 { font-size: 2.2em; margin: 0 0 10px; }
+        .post-content { font-size: 1.05em; line-height: 1.9; }
+        .post-content p { margin: 1.2em 0; text-indent: 2em; }
+        footer { background: #1a1a2e; color: #ccc; padding: 20px 30px; text-align: center; font-size: 0.85em; }
+        .flash { padding: 10px 30px; }
+        .flash.success { background: #e8f5e9; color: #2e7d32; }
+        .flash.error { background: #fbe9e7; color: #c62828; }
+        .search-box { display: inline-flex; }
+        .search-box input { padding: 4px 8px; border: 1px solid #ddd; font-size: 0.85em; }
+        .search-box button { padding: 4px 10px; background: #1a1a2e; color: #fff; border: none; cursor: pointer; }
+        .pagination { text-align: center; padding: 20px 0; }
+        .pagination a { display: inline-block; padding: 6px 14px; margin: 0 3px; background: #f5f2ed; color: #1a1a2e; text-decoration: none; border-radius: 3px; }
+        .comments-section { padding: 20px 30px; }
+        .comment { padding: 10px 0; border-bottom: 1px solid #eee; }
+        .comment-author { font-weight: bold; }
+        .comment-date { color: #999; font-size: 0.8em; }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-size: 0.9em; font-weight: bold; margin-bottom: 4px; }
+        .form-group input, .form-group textarea { width: 100%; padding: 8px; border: 1px solid #ddd; }
+    </style>
+</head>
+<body>
+<div class="site-wrap">
+    <div class="top-bar">
+        <span>{{ now().strftime('%Y年%m月%d日') if now is defined else '' }}</span>
+        <span>
+            <form class="search-box" action="{{ url_for('public.search') }}" method="GET">
+                <input type="text" name="q" placeholder="搜索...">
+                <button type="submit">搜索</button>
+            </form>
+        </span>
+    </div>
+    <header>
+        <h1><a href="{{ url_for('public.home') }}">{{ settings.site_name or 'CMS' }}</a></h1>
+        <div class="tagline">{{ settings.site_description or '' }}</div>
+    </header>
+    <nav class="main-nav">
+        {% for cat in categories %}
+        <a href="{{ url_for('public.category_archive', slug=cat.slug) }}">{{ cat.name }}</a>
+        {% endfor %}
+    </nav>
+    {% for msg in get_flashed_messages(with_categories=true) %}
+    <div class="flash {{ msg[0] }}">{{ msg[1] }}</div>
+    {% endfor %}
+    {% block content %}{% endblock %}
+    <footer>
+        <p>&copy; {{ settings.site_name or 'CMS' }} 版权所有</p>
+    </footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,41 @@
+{% extends 'public/base.html' %}
+{% block content %}
+<div class="content-wrap">
+    <div class="main-col">
+        {% if posts.items %}
+        <div class="hero-article">
+            <h2><a href="{{ url_for('public.post_detail', slug=posts.items[0].slug) }}">{{ posts.items[0].title }}</a></h2>
+            <div class="post-meta">{{ posts.items[0].author.display_name }} · {{ posts.items[0].published_at.strftime('%Y-%m-%d') }}</div>
+            <p>{{ posts.items[0].excerpt or posts.items[0].content[:300] }}{% if posts.items[0].content|length > 300 %}...{% endif %}</p>
+        </div>
+        <div class="article-list">
+            {% for post in posts.items[1:] %}
+            <article>
+                <h3><a href="{{ url_for('public.post_detail', slug=post.slug) }}">{{ post.title }}</a></h3>
+                <div class="post-meta">{{ post.author.display_name }} · {{ post.published_at.strftime('%Y-%m-%d') }}{% if post.category %} · {{ post.category.name }}{% endif %}</div>
+            </article>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p style="text-align:center;padding:60px 0;color:#999;">暂无文章</p>
+        {% endif %}
+        {% if posts.pages > 1 %}
+        <div class="pagination">
+            {% if posts.has_prev %}<a href="?page={{ posts.prev_num }}">← 上一页</a>{% endif %}
+            <span style="padding:6px 14px;color:#999;">第 {{ posts.page }} / {{ posts.pages }} 页</span>
+            {% if posts.has_next %}<a href="?page={{ posts.next_num }}">下一页 →</a>{% endif %}
+        </div>
+        {% endif %}
+    </div>
+    <aside class="side-col">
+        <div class="widget">
+            <h3>分类</h3>
+            <ul>
+            {% for cat in categories %}
+                <li><a href="{{ url_for('public.category_archive', slug=cat.slug) }}">{{ cat.name }} ({{ cat.post_count }})</a></li>
+            {% endfor %}
+            </ul>
+        </div>
+    </aside>
+</div>
+{% endblock %}

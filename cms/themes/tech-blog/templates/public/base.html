@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if title %}{{ title }} - {% endif %}{{ settings.site_name or 'CMS' }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, sans-serif; color: #1a1a2e; background: #0f0f23; }
+        .site-wrap { max-width: 1100px; margin: 0 auto; }
+        header { background: linear-gradient(135deg, #0f0f23, #1a1a3e); padding: 25px 30px; border-bottom: 1px solid #2a2a5e; }
+        header .inner { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        header h1 { margin: 0; }
+        header h1 a { color: #00d4ff; text-decoration: none; font-weight: 700; font-size: 1.3em; }
+        header h1 a span { color: #7c5cfc; }
+        nav.top-nav { display: flex; gap: 20px; align-items: center; }
+        nav.top-nav a { color: #8899cc; text-decoration: none; font-size: 0.9em; transition: color 0.2s; }
+        nav.top-nav a:hover { color: #00d4ff; }
+        .search-box input { padding: 6px 12px; background: #1a1a3e; border: 1px solid #2a2a5e; color: #ddd; border-radius: 6px; font-size: 0.85em; width: 160px; }
+        .search-box input::placeholder { color: #556; }
+        .search-box button { padding: 6px 14px; background: #7c5cfc; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
+        .content-wrap { display: flex; gap: 30px; padding: 30px; max-width: 1100px; margin: 0 auto; }
+        .main-col { flex: 2; min-width: 0; }
+        .side-col { flex: 1; min-width: 260px; }
+        .post-card { background: #1a1a3e; border-radius: 12px; padding: 24px; margin-bottom: 20px; border: 1px solid #2a2a5e; transition: border-color 0.2s; }
+        .post-card:hover { border-color: #7c5cfc; }
+        .post-card h2 { margin: 0 0 8px; }
+        .post-card h2 a { color: #e0e0ff; text-decoration: none; font-size: 1.1em; }
+        .post-card h2 a:hover { color: #00d4ff; }
+        .post-meta { color: #667; font-size: 0.85em; margin-bottom: 10px; display: flex; gap: 12px; flex-wrap: wrap; }
+        .post-meta span { display: flex; align-items: center; gap: 4px; }
+        .post-card p { color: #99a; line-height: 1.6; font-size: 0.92em; }
+        .tag { display: inline-block; padding: 2px 10px; background: #2a2a5e; color: #7c5cfc; border-radius: 20px; font-size: 0.75em; text-decoration: none; }
+        .tag:hover { background: #7c5cfc; color: #fff; }
+        .widget { background: #1a1a3e; border-radius: 12px; padding: 20px; margin-bottom: 20px; border: 1px solid #2a2a5e; }
+        .widget h3 { color: #00d4ff; font-size: 0.9em; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; }
+        .widget ul { list-style: none; padding: 0; }
+        .widget ul li { padding: 6px 0; border-bottom: 1px solid #2a2a5e; }
+        .widget ul li:last-child { border-bottom: none; }
+        .widget ul li a { color: #99a; text-decoration: none; font-size: 0.9em; }
+        .widget ul li a:hover { color: #00d4ff; }
+        .widget ul li .count { color: #556; font-size: 0.85em; }
+        .tag-cloud { display: flex; flex-wrap: wrap; gap: 6px; }
+        .post-detail { background: #1a1a3e; border-radius: 12px; padding: 30px; border: 1px solid #2a2a5e; }
+        .post-detail h1 { color: #e0e0ff; font-size: 1.8em; margin-bottom: 15px; }
+        .post-content { color: #ccd; line-height: 1.8; font-size: 0.95em; }
+        .post-content p { margin: 1em 0; }
+        .post-content code { background: #0f0f23; padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.9em; color: #00d4ff; }
+        .post-content pre { background: #0f0f23; padding: 16px; border-radius: 8px; overflow-x: auto; border: 1px solid #2a2a5e; }
+        .post-content pre code { background: none; padding: 0; color: #ccd; }
+        .comments-section { margin-top: 30px; padding: 20px; background: #1a1a3e; border-radius: 12px; border: 1px solid #2a2a5e; }
+        .comments-section h3 { color: #00d4ff; }
+        .comment { padding: 10px 0; border-bottom: 1px solid #2a2a5e; }
+        .comment:last-child { border-bottom: none; }
+        .comment-author { color: #e0e0ff; font-weight: 600; }
+        .comment-date { color: #556; font-size: 0.8em; }
+        .comment-content { color: #99a; margin-top: 5px; }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; color: #99a; font-size: 0.85em; margin-bottom: 4px; }
+        .form-group input, .form-group textarea { width: 100%; padding: 10px; background: #0f0f23; border: 1px solid #2a2a5e; color: #ddd; border-radius: 6px; }
+        .btn-primary { padding: 10px 24px; background: #7c5cfc; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; transition: background 0.2s; }
+        .btn-primary:hover { background: #6b4fe0; }
+        .pagination { text-align: center; margin: 30px 0; }
+        .pagination a { display: inline-block; padding: 8px 16px; margin: 0 4px; background: #1a1a3e; color: #7c5cfc; text-decoration: none; border-radius: 8px; border: 1px solid #2a2a5e; }
+        .pagination a:hover { background: #7c5cfc; color: #fff; }
+        .page-info { display: inline-block; padding: 8px 16px; color: #556; }
+        footer { background: #1a1a3e; padding: 20px 30px; text-align: center; border-top: 1px solid #2a2a5e; color: #556; font-size: 0.85em; }
+        .flash { padding: 12px 30px; }
+        .flash.success { background: #1b3a2a; color: #4caf50; }
+        .flash.error { background: #3a1b1b; color: #f44336; }
+        .hero-section { background: linear-gradient(135deg, #1a1a3e, #2a1a5e); border-radius: 16px; padding: 40px; margin-bottom: 30px; border: 1px solid #7c5cfc44; }
+        .hero-section h2 { font-size: 2em; color: #00d4ff; margin: 0 0 10px; }
+        .hero-section p { color: #99a; font-size: 1.1em; }
+    </style>
+</head>
+<body>
+<div class="site-wrap">
+    <header>
+        <div class="inner">
+            <h1><a href="{{ url_for('public.home') }}"><span>//</span> {{ settings.site_name or 'CMS' }}</a></h1>
+            <nav class="top-nav">
+                {% for cat in categories[:6] %}
+                <a href="{{ url_for('public.category_archive', slug=cat.slug) }}">{{ cat.name }}</a>
+                {% endfor %}
+                <form class="search-box" action="{{ url_for('public.search') }}" method="GET">
+                    <input type="text" name="q" placeholder="搜索...">
+                    <button type="submit">→</button>
+                </form>
+            </nav>
+        </div>
+    </header>
+    {% for msg in get_flashed_messages(with_categories=true) %}
+    <div class="flash {{ msg[0] }}">{{ msg[1] }}</div>
+    {% endfor %}
+    {% block content %}{% endblock %}
+    <footer>
+        <p>&copy; {{ settings.site_name or 'CMS' }} — Built with Flask CMS</p>
+    </footer>
+</div>
+</body>
+</html>

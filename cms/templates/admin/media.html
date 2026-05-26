@@ -1,0 +1,42 @@
+{% extends 'admin/base.html' %}
+{% block content %}
+<h1>媒体库</h1>
+<form method="POST" enctype="multipart/form-data" class="upload-form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="form-group">
+        <label>选择文件</label>
+        <input type="file" name="file" required>
+    </div>
+    <div class="form-group">
+        <label>替代文本</label>
+        <input type="text" name="alt_text" placeholder="图片描述">
+    </div>
+    <button type="submit" class="btn btn-primary">上传</button>
+</form>
+<div class="media-grid">
+    {% for item in media_items.items %}
+    <div class="media-card">
+        {% if item.mime_type.startswith('image/') %}
+        <img src="{{ url_for('serve_media', filename=item.filename) }}" alt="{{ item.alt_text or item.original_name }}">
+        {% else %}
+        <div class="media-icon">📄</div>
+        {% endif %}
+        <div class="media-info">
+            <p class="media-name">{{ item.original_name }}</p>
+            <p class="media-meta">{{ '%0.1f'|format(item.size/1024) }} KB</p>
+            <form method="POST" action="{{ url_for('admin.media_delete', media_id=item.id) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('确认删除?')">删除</button>
+            </form>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% if media_items.pages > 1 %}
+<div class="pagination">
+    {% if media_items.has_prev %}<a href="?page={{ media_items.prev_num }}">上一页</a>{% endif %}
+    <span>第 {{ media_items.page }} / {{ media_items.pages }} 页</span>
+    {% if media_items.has_next %}<a href="?page={{ media_items.next_num }}">下一页</a>{% endif %}
+</div>
+{% endif %}
+{% endblock %}

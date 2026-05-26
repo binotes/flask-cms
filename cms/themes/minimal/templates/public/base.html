@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if title %}{{ title }} - {% endif %}{{ settings.site_name or 'CMS' }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        body { max-width: 720px; margin: 0 auto; padding: 20px; font-family: Georgia, 'Source Han Serif CN', serif; color: #222; background: #fafafa; }
+        header { border-bottom: 1px solid #ddd; padding: 20px 0; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
+        header h1 { margin: 0; font-size: 1.5em; }
+        header h1 a { color: #222; text-decoration: none; }
+        nav { display: flex; gap: 15px; }
+        nav a { color: #666; text-decoration: none; font-size: 0.9em; }
+        nav a:hover { color: #222; }
+        .flash { padding: 10px; margin: 10px 0; border-radius: 4px; font-size: 0.9em; }
+        .flash.success { background: #e8f5e9; color: #2e7d32; }
+        .flash.error { background: #fbe9e7; color: #c62828; }
+        footer { border-top: 1px solid #ddd; padding: 20px 0; margin-top: 40px; text-align: center; color: #999; font-size: 0.85em; }
+        .post-card { margin-bottom: 30px; }
+        .post-card h2 { margin: 0 0 8px 0; }
+        .post-card h2 a { color: #222; text-decoration: none; }
+        .post-card h2 a:hover { text-decoration: underline; }
+        .post-meta { color: #999; font-size: 0.85em; margin-bottom: 10px; }
+        .post-detail h1 { font-size: 2em; margin-bottom: 10px; }
+        .post-content { line-height: 1.8; font-size: 1.05em; }
+        .post-content p { margin: 1em 0; }
+        .search-box { display: flex; gap: 5px; }
+        .search-box input { padding: 6px 10px; border: 1px solid #ddd; border-radius: 3px; font-size: 0.9em; }
+        .search-box button { padding: 6px 12px; background: #222; color: #fff; border: none; border-radius: 3px; cursor: pointer; }
+        .tag { display: inline-block; background: #eee; padding: 2px 8px; border-radius: 3px; font-size: 0.8em; color: #666; margin: 2px; text-decoration: none; }
+        .tag:hover { background: #ddd; }
+        .pagination { text-align: center; margin: 30px 0; }
+        .pagination a { display: inline-block; padding: 6px 14px; margin: 0 3px; border: 1px solid #ddd; text-decoration: none; color: #666; border-radius: 3px; }
+        .pagination a:hover { background: #eee; }
+        .page-info { display: inline-block; padding: 6px 14px; color: #999; }
+        .comments-section { margin-top: 40px; border-top: 1px solid #ddd; padding-top: 20px; }
+        .comment { padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
+        .comment-author { font-weight: bold; }
+        .comment-date { color: #999; font-size: 0.8em; }
+        .comment-content { margin-top: 5px; }
+        .comment-form { margin-top: 20px; }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-size: 0.9em; color: #666; margin-bottom: 4px; }
+        .form-group input, .form-group textarea { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 3px; font-size: 0.95em; }
+        .btn-primary { padding: 8px 20px; background: #222; color: #fff; border: none; border-radius: 3px; cursor: pointer; }
+        .btn-primary:hover { background: #444; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1><a href="{{ url_for('public.home') }}">{{ settings.site_name or 'CMS' }}</a></h1>
+        <nav>
+            {% for cat in categories[:5] %}
+            <a href="{{ url_for('public.category_archive', slug=cat.slug) }}">{{ cat.name }}</a>
+            {% endfor %}
+            <form class="search-box" action="{{ url_for('public.search') }}" method="GET">
+                <input type="text" name="q" placeholder="搜索...">
+                <button type="submit">→</button>
+            </form>
+        </nav>
+    </header>
+    {% for msg in get_flashed_messages(with_categories=true) %}
+    <div class="flash {{ msg[0] }}">{{ msg[1] }}</div>
+    {% endfor %}
+    {% block content %}{% endblock %}
+    <footer>
+        <p>&copy; {{ settings.site_name or 'CMS' }} — Powered by Flask CMS</p>
+    </footer>
+</body>
+</html>

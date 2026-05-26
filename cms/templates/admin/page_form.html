@@ -1,0 +1,56 @@
+{% extends 'admin/base.html' %}
+{% block content %}
+<div class="admin-header">
+    <h1>{{ '编辑页面' if page else '新建页面' }}</h1>
+    <a href="{{ url_for('admin.pages_list') }}" class="btn btn-sm">返回列表</a>
+</div>
+<div class="card">
+    <div class="card-body">
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+
+            <div class="form-group">
+                {{ form.title.label }}
+                {{ form.title(class="form-control", placeholder="输入页面标题") }}
+                {% for error in form.title.errors %}
+                <span class="form-error">{{ error }}</span>
+                {% endfor %}
+            </div>
+
+            <div class="form-group">
+                {{ form.content.label }}
+                {{ form.content(rows=15, class="form-control", placeholder="输入页面内容") }}
+                {% for error in form.content.errors %}
+                <span class="form-error">{{ error }}</span>
+                {% endfor %}
+            </div>
+
+            <div class="form-row">
+                <div class="form-group form-group-half">
+                    {{ form.status.label }}
+                    {{ form.status(class="form-control") }}
+                </div>
+                <div class="form-group form-group-half">
+                    {{ form.parent_id.label }}
+                    {{ form.parent_id(class="form-control") }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group form-group-half">
+                    {{ form.order.label }}
+                    {{ form.order(class="form-control", placeholder="排序值") }}
+                    {% for error in form.order.errors %}
+                    <span class="form-error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">{{ '保存' if page else '创建' }}</button>
+                <a href="{{ url_for('admin.pages_list') }}" class="btn btn-secondary">取消</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends 'admin/base.html' %}
+{% block content %}
+<div class="admin-header">
+    <h1>页面管理</h1>
+    <a href="{{ url_for('admin.page_create') }}" class="btn btn-primary">新建页面</a>
+</div>
+
+<div class="card">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>标题</th>
+                <th>状态</th>
+                <th>日期</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for page in pages %}
+            <tr>
+                <td>
+                    <a href="{{ url_for('admin.page_edit', page_id=page.id) }}">{{ page.title }}</a>
+                </td>
+                <td>
+                    <span class="badge {{ 'badge-approved' if page.status == 'publish' else 'badge-draft' }}">
+                        {{ '已发布' if page.status == 'publish' else '草稿' }}
+                    </span>
+                </td>
+                <td>{{ page.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td class="actions">
+                    <a href="{{ url_for('admin.page_edit', page_id=page.id) }}" class="btn btn-sm btn-edit">编辑</a>
+                    <form method="POST" action="{{ url_for('admin.page_delete', page_id=page.id) }}" style="display:inline" onsubmit="return confirm('确定删除此页面吗？')">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="btn btn-sm btn-danger">删除</button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="4" class="text-center">暂无页面</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

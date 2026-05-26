@@ -1,0 +1,53 @@
+{% extends 'admin/base.html' %}
+{% block content %}
+<h1>插件管理</h1>
+{% if plugins %}
+<table class="table">
+    <thead>
+        <tr>
+            <th>插件名称</th>
+            <th>版本</th>
+            <th>描述</th>
+            <th>作者</th>
+            <th>状态</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for p in plugins %}
+        <tr>
+            <td><strong>{{ p.name }}</strong></td>
+            <td>{{ p.version }}</td>
+            <td>{{ p.description }}</td>
+            <td>{{ p.author }}</td>
+            <td>
+                {% if p.name in active_plugins %}
+                <span class="badge badge-approved">已激活</span>
+                {% else %}
+                <span class="badge badge-draft">未激活</span>
+                {% endif %}
+            </td>
+            <td class="actions">
+                {% if p.name in active_plugins %}
+                <form method="POST" action="{{ url_for('admin.plugin_deactivate', name=p.name) }}" style="display:inline">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn btn-warning btn-sm">停用</button>
+                </form>
+                {% else %}
+                <form method="POST" action="{{ url_for('admin.plugin_activate', name=p.name) }}" style="display:inline">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn btn-success btn-sm">激活</button>
+                </form>
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="empty-state">
+    <h2>暂无插件</h2>
+    <p>将插件放置到 <code>cms/plugins/</code> 目录下即可发现</p>
+</div>
+{% endif %}
+{% endblock %}

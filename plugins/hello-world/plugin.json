@@ -1,0 +1,6 @@
+{
+    "name": "hello-world",
+    "version": "1.0",
+    "description": "示例插件：在每篇文章末尾添加版权信息",
+    "author": "Flask CMS"
+}

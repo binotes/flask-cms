@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注册 - {{ settings.site_name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="auth-page">
+    <div class="auth-container">
+        <h1>{{ settings.site_name }}</h1>
+        <h2>注册</h2>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="flash flash-{{ category }}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.username.label }} {{ form.username(class='form-control', placeholder='3-80个字符') }}
+            </div>
+            <div class="form-group">
+                {{ form.email.label }} {{ form.email(class='form-control', placeholder='your@email.com') }}
+            </div>
+            <div class="form-group">
+                {{ form.password.label }} {{ form.password(class='form-control', placeholder='至少6位') }}
+            </div>
+            <div class="form-group">
+                {{ form.confirm.label }} {{ form.confirm(class='form-control') }}
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">注册</button>
+        </form>
+        <p class="auth-links">
+            已有账号？<a href="{{ url_for('auth.login') }}">立即登录</a>
+        </p>
+    </div>
+</body>
+</html>

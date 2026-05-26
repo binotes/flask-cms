@@ -1,0 +1,12 @@
+{% set paginator = posts if posts is defined else comments if comments is defined else None %}
+{% if paginator and paginator.pages > 1 %}
+<div class="pagination">
+    {% if paginator.has_prev %}
+    <a href="?page={{ paginator.prev_num }}" class="btn btn-sm">上一页</a>
+    {% endif %}
+    <span class="page-info">第 {{ paginator.page }} / {{ paginator.pages }} 页</span>
+    {% if paginator.has_next %}
+    <a href="?page={{ paginator.next_num }}" class="btn btn-sm">下一页</a>
+    {% endif %}
+</div>
+{% endif %}

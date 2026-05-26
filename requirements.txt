@@ -1,0 +1,11 @@
+Flask==3.0.0
+Flask-SQLAlchemy==3.1.1
+Flask-Login==0.6.3
+Flask-WTF==1.2.1
+WTForms==3.1.1
+Markdown==3.5.1
+Pillow==10.2.0
+python-slugify==8.0.1
+Flask-Migrate==4.0.5
+gunicorn==21.2.0
+email_validator==2.3.0

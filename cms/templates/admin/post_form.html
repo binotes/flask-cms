@@ -1,0 +1,65 @@
+{% extends 'admin/base.html' %}
+{% block content %}
+<div class="admin-header">
+    <h1>{{ '编辑文章' if post else '写文章' }}</h1>
+    <a href="{{ url_for('admin.posts_list') }}" class="btn btn-sm">返回列表</a>
+</div>
+<div class="card">
+    <div class="card-body">
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+
+            <div class="form-group">
+                {{ form.title.label }}
+                {{ form.title(class="form-control", placeholder="输入文章标题") }}
+                {% for error in form.title.errors %}
+                <span class="form-error">{{ error }}</span>
+                {% endfor %}
+            </div>
+
+            <div class="form-group">
+                {{ form.content.label }}
+                {{ form.content(rows=15, class="form-control", placeholder="输入文章内容") }}
+                {% for error in form.content.errors %}
+                <span class="form-error">{{ error }}</span>
+                {% endfor %}
+            </div>
+
+            <div class="form-group">
+                {{ form.excerpt.label }}
+                {{ form.excerpt(rows=3, class="form-control", placeholder="文章摘要（可选）") }}
+                {% for error in form.excerpt.errors %}
+                <span class="form-error">{{ error }}</span>
+                {% endfor %}
+            </div>
+
+            <div class="form-row">
+                <div class="form-group form-group-half">
+                    {{ form.status.label }}
+                    {{ form.status(class="form-control") }}
+                </div>
+                <div class="form-group form-group-half">
+                    {{ form.category_id.label }}
+                    {{ form.category_id(class="form-control") }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group form-group-half">
+                    {{ form.tags.label }}
+                    {{ form.tags(class="form-control", placeholder="标签1, 标签2, 标签3") }}
+                </div>
+                <div class="form-group form-group-half">
+                    {{ form.comment_status.label }}
+                    {{ form.comment_status(class="form-control") }}
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">{{ '保存' if post else '发布' }}</button>
+                <a href="{{ url_for('admin.posts_list') }}" class="btn btn-secondary">取消</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

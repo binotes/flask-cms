@@ -1,0 +1,11 @@
+{% if posts.pages > 1 %}
+<div class="pagination">
+    {% if posts.has_prev %}
+    <a href="?page={{ posts.prev_num }}" class="btn">← 上一页</a>
+    {% endif %}
+    <span class="page-info">第 {{ posts.page }} / {{ posts.pages }} 页</span>
+    {% if posts.has_next %}
+    <a href="?page={{ posts.next_num }}" class="btn">下一页 →</a>
+    {% endif %}
+</div>
+{% endif %}

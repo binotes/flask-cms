@@ -1,0 +1,66 @@
+{% extends 'admin/base.html' %}
+{% block content %}
+<h1>主题管理</h1>
+<div class="themes-grid">
+    <div class="theme-card {% if active_theme.name == 'default' %}theme-active{% endif %}">
+        <div class="theme-screenshot">
+            <div class="default-theme-preview">
+                <h3>Default</h3>
+                <p>Flask CMS 默认主题</p>
+            </div>
+        </div>
+        <div class="theme-info">
+            <h3>Default</h3>
+            <p class="theme-version">v1.0</p>
+            <p>Flask CMS 内置默认主题</p>
+            {% if active_theme.name == 'default' %}
+            <span class="badge badge-approved">当前主题</span>
+            {% else %}
+            <form method="POST" action="{{ url_for('admin.theme_activate', name='default') }}" style="display:inline">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-primary">启用</button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+    {% for t in themes %}
+    <div class="theme-card {% if active_theme and active_theme.name == t.name %}theme-active{% endif %}">
+        <div class="theme-screenshot">
+            <div class="default-theme-preview">
+                <h3>{{ t.name }}</h3>
+            </div>
+        </div>
+        <div class="theme-info">
+            <h3>{{ t.name }}</h3>
+            <p class="theme-version">v{{ t.version }}</p>
+            <p>{{ t.description }}</p>
+            <p class="theme-author">作者: {{ t.author }}</p>
+            {% if active_theme and active_theme.name == t.name %}
+            <span class="badge badge-approved">当前主题</span>
+            {% else %}
+            <form method="POST" action="{{ url_for('admin.theme_activate', name=t.name) }}" style="display:inline">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-primary">启用</button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+    {% else %}
+    {% if active_theme.name == 'default' %}
+    <p style="color:#888;grid-column:1/-1">除默认主题外暂无其他主题</p>
+    {% endif %}
+    {% endfor %}
+</div>
+<style>
+.themes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+.theme-card { background: #fff; border: 2px solid #e5e7eb; border-radius: 8px; overflow: hidden; transition: border-color 0.2s; }
+.theme-card.theme-active { border-color: #2563eb; }
+.theme-screenshot { height: 180px; background: #f3f4f6; display: flex; align-items: center; justify-content: center; }
+.default-theme-preview { text-align: center; color: #9ca3af; }
+.default-theme-preview h3 { color: #555; font-size: 18px; }
+.theme-info { padding: 15px; }
+.theme-info h3 { margin: 0 0 5px; font-size: 16px; }
+.theme-version { color: #888; font-size: 12px; }
+.theme-author { font-size: 13px; color: #888; margin-top: 5px; }
+</style>
+{% endblock %}

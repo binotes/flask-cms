@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if title %}{{ title }} - {% endif %}{{ settings.site_name or 'CMS' }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #1a1a1a; color: #ccc; font-family: -apple-system, 'Noto Sans SC', sans-serif; line-height: 1.7; }
+        .wrap { max-width: 800px; margin: 0 auto; padding: 20px; }
+        header { padding: 30px 0; border-bottom: 1px solid #333; margin-bottom: 30px; }
+        header h1 { font-size: 1.6em; font-weight: 300; }
+        header h1 a { color: #e0e0e0; text-decoration: none; }
+        header h1 a:hover { color: #7cafc2; }
+        nav { margin-top: 10px; display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
+        nav a { color: #666; text-decoration: none; font-size: 0.9em; }
+        nav a:hover { color: #7cafc2; }
+        .search-box { display: flex; gap: 4px; }
+        .search-box input { padding: 5px 10px; background: #222; border: 1px solid #333; color: #ccc; border-radius: 3px; font-size: 0.85em; }
+        .search-box button { padding: 5px 12px; background: #333; color: #ccc; border: none; border-radius: 3px; cursor: pointer; }
+        .flash { padding: 10px 15px; margin: 10px 0; border-radius: 4px; font-size: 0.9em; }
+        .flash.success { background: #1a3a2a; color: #6fcf97; border: 1px solid #2a5a3a; }
+        .flash.error { background: #3a1a1a; color: #cf6f6f; border: 1px solid #5a2a2a; }
+        .post-card { padding: 20px 0; border-bottom: 1px solid #2a2a2a; }
+        .post-card:last-child { border-bottom: none; }
+        .post-card h2 { margin: 0 0 8px; font-weight: 400; }
+        .post-card h2 a { color: #d0d0d0; text-decoration: none; font-size: 1.2em; }
+        .post-card h2 a:hover { color: #7cafc2; }
+        .post-meta { color: #555; font-size: 0.85em; margin-bottom: 8px; display: flex; gap: 12px; }
+        .post-card p { color: #777; line-height: 1.7; }
+        .tag { color: #7cafc2; text-decoration: none; font-size: 0.85em; }
+        .tag:hover { text-decoration: underline; }
+        .post-detail h1 { font-weight: 300; font-size: 2em; color: #e0e0e0; margin-bottom: 15px; }
+        .post-content { line-height: 1.9; color: #bbb; }
+        .post-content p { margin: 1.2em 0; }
+        .post-content a { color: #7cafc2; }
+        .post-content code { background: #222; padding: 2px 6px; border-radius: 3px; font-size: 0.9em; color: #e0c080; }
+        .post-content pre { background: #111; padding: 16px; border-radius: 6px; overflow-x: auto; border: 1px solid #333; }
+        .comments-section { margin-top: 40px; padding-top: 20px; border-top: 1px solid #333; }
+        .comment { padding: 12px 0; border-bottom: 1px solid #2a2a2a; }
+        .comment-author { color: #d0d0d0; font-weight: 500; }
+        .comment-date { color: #555; font-size: 0.85em; }
+        .comment-content { color: #999; margin-top: 5px; }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; color: #888; font-size: 0.85em; margin-bottom: 4px; }
+        .form-group input, .form-group textarea { width: 100%; padding: 8px 12px; background: #222; border: 1px solid #333; color: #ccc; border-radius: 4px; }
+        .btn-primary { padding: 8px 20px; background: #7cafc2; color: #1a1a1a; border: none; border-radius: 4px; cursor: pointer; font-weight: 500; }
+        .btn-primary:hover { background: #8fc4d8; }
+        .pagination { text-align: center; margin: 30px 0; }
+        .pagination a { display: inline-block; padding: 6px 14px; margin: 0 3px; background: #222; color: #7cafc2; text-decoration: none; border-radius: 3px; }
+        .pagination a:hover { background: #333; }
+        .page-info { color: #555; padding: 6px 14px; }
+        footer { text-align: center; padding: 30px 0; margin-top: 40px; border-top: 1px solid #2a2a2a; color: #444; font-size: 0.85em; }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <header>
+        <h1><a href="{{ url_for('public.home') }}">{{ settings.site_name or 'CMS' }}</a></h1>
+        <nav>
+            {% for cat in categories %}<a href="{{ url_for('public.category_archive', slug=cat.slug) }}">{{ cat.name }}</a>{% endfor %}
+            <form class="search-box" action="{{ url_for('public.search') }}" method="GET">
+                <input type="text" name="q" placeholder="搜索...">
+                <button type="submit">→</button>
+            </form>
+        </nav>
+    </header>
+    {% for msg in get_flashed_messages(with_categories=true) %}
+    <div class="flash {{ msg[0] }}">{{ msg[1] }}</div>
+    {% endfor %}
+    {% block content %}{% endblock %}
+    <footer><p>&copy; {{ settings.site_name or 'CMS' }}</p></footer>
+</div>
+</body>
+</html>

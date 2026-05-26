@@ -1,0 +1,96 @@
+{% extends 'admin/base.html' %}
+{% block content %}
+<div class="admin-header">
+    <h1>文章管理</h1>
+    <a href="{{ url_for('admin.post_create') }}" class="btn btn-primary">写文章</a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="GET" action="{{ url_for('admin.posts_list') }}" class="filter-form">
+            <div class="filter-row">
+                <div class="form-group">
+                    <label for="status">状态</label>
+                    <select name="status" id="status" onchange="this.form.submit()">
+                        <option value="">全部状态</option>
+                        <option value="publish" {{ 'selected' if request.args.get('status') == 'publish' }}>已发布</option>
+                        <option value="draft" {{ 'selected' if request.args.get('status') == 'draft' }}>草稿
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="category">分类</label>
+                    <select name="category" id="category" onchange="this.form.submit()">
+                        <option value="0">全部分类</option>
+                        {% for cat in categories %}
+<option value="{{ cat.id }}" {{ 'selected' if request.args.get('category')|int == cat.id }}>{{ cat.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="q">搜索</label>
+                    <input type="text" name="q" id="q" value="{{ request.args.get('q', '') }}" placeholder="搜索标题...">
+                </div>
+                <div class="form-group form-group-btn">
+                    <button type="submit" class="btn btn-secondary">筛选</button>
+                    <a href="{{ url_for('admin.posts_list') }}" class="btn btn-sm">重置</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>标题</th>
+                <th>作者</th>
+                <th>分类</th>
+                <th>状态</th>
+                <th>日期</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for post in posts.items %}
+            <tr>
+                <td>
+                    <a href="{{ url_for('admin.post_edit', post_id=post.id) }}">{{ post.title }}</a>
+                </td>
+                <td>{{ post.author.display_name or '未知' }}</td>
+                <td>{{ post.category.name if post.category else '未分类' }}</td>
+                <td>
+                    <span class="badge {{ 'badge-approved' if post.status == 'publish' else 'badge-draft' }}">
+                        {{ '已发布' if post.status == 'publish' else '草稿' }}
+                    </span>
+                </td>
+                <td>{{ post.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td class="actions">
+                    <a href="{{ url_for('admin.post_edit', post_id=post.id) }}" class="btn btn-sm btn-edit">编辑</a>
+                    <form method="POST" action="{{ url_for('admin.post_delete', post_id=post.id) }}" style="display:inline" onsubmit="return confirm('确定删除此文章吗？')">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="btn btn-sm btn-danger">删除</button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6" class="text-center">暂无文章</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% if posts.pages > 1 %}
+<div class="pagination">
+    {% if posts.has_prev %}
+    <a href="{{ url_for('admin.posts_list', page=posts.prev_num, status=request.args.get('status', ''), category=request.args.get('category', 0), q=request.args.get('q', '')) }}" class="btn btn-sm">上一页</a>
+    {% endif %}
+    <span class="page-info">第 {{ posts.page }} / {{ posts.pages }} 页</span>
+    {% if posts.has_next %}
+    <a href="{{ url_for('admin.posts_list', page=posts.next_num, status=request.args.get('status', ''), category=request.args.get('category', 0), q=request.args.get('q', '')) }}" class="btn btn-sm">下一页</a>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}

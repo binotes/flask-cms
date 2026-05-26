@@ -1,0 +1,106 @@
+{% extends 'admin/base.html' %}
+{% block content %}
+<div class="admin-header">
+    <h1>仪表盘</h1>
+</div>
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-number">{{ post_count }}</div>
+        <div class="stat-label">文章总数</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">{{ page_count }}</div>
+        <div class="stat-label">页面总数</div>
+    </div>
+    <div class="stat-card stat-success">
+        <div class="stat-number">{{ published_count }}</div>
+        <div class="stat-label">已发布</div>
+    </div>
+    <div class="stat-card stat-warning">
+        <div class="stat-number">{{ draft_count }}</div>
+        <div class="stat-label">草稿</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">{{ comment_count }}</div>
+        <div class="stat-label">评论总数</div>
+    </div>
+    <div class="stat-card stat-danger">
+        <div class="stat-number">{{ pending_comment_count }}</div>
+        <div class="stat-label">待审核</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">{{ media_count }}</div>
+        <div class="stat-label">媒体文件</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">{{ category_count }}</div>
+        <div class="stat-label">分类</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">{{ tag_count }}</div>
+        <div class="stat-label">标签</div>
+    </div>
+</div>
+
+<div class="dashboard-grid">
+    <div class="dashboard-panel">
+        <div class="panel-header">
+            <h2>最近文章</h2>
+            <a href="{{ url_for('admin.posts_list') }}" class="btn-sm">查看全部</a>
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>标题</th>
+                    <th>状态</th>
+                    <th>时间</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for post in recent_posts %}
+                <tr>
+                    <td><a href="{{ url_for('admin.post_edit', post_id=post.id) }}">{{ post.title }}</a></td>
+                    <td><span class="badge {{ 'badge-approved' if post.status == 'publish' else 'badge-draft' }}">{{ '已发布' if post.status == 'publish' else '草稿' }}</span></td>
+                    <td>{{ post.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="3" class="text-center">暂无文章</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="dashboard-panel">
+        <div class="panel-header">
+            <h2>最近评论</h2>
+            <a href="{{ url_for('admin.comments_list') }}" class="btn-sm">查看全部</a>
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>评论内容</th>
+                    <th>文章</th>
+                    <th>状态</th>
+                    <th>时间</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for comment in recent_comments %}
+                <tr>
+                    <td>{{ comment.content[:50] }}{% if comment.content|length > 50 %}...{% endif %}</td>
+                    <td>{{ comment.post.title if comment.post else '未知' }}</td>
+                    <td><span class="badge {{ 'badge-approved' if comment.status == 'approved' else 'badge-draft' if comment.status == 'pending' else 'badge-danger' }}">{{ '已批准' if comment.status == 'approved' else '待审核' if comment.status == 'pending' else '垃圾' }}</span></td>
+                    <td>{{ comment.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="4" class="text-center">暂无评论</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
