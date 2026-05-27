@@ -1,0 +1,6 @@
+{
+    "name": "tag-cloud",
+    "version": "1.0.0",
+    "description": "标签云 — 按文章数量分配字体大小的标签展示，支持侧边栏和自定义位置",
+    "author": "Flask CMS"
+}

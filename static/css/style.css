@@ -106,7 +106,15 @@ textarea.form-control { resize: vertical; min-height: 100px; }
 .empty-state h2 { color: #555; margin-bottom: 10px; }
 
 /* Footer */
-.site-footer { background: #fff; border-top: 1px solid #e5e7eb; padding: 20px 0; margin-top: 40px; text-align: center; color: #9ca3af; font-size: 13px; }
+.site-footer { background: #fff; border-top: 1px solid #e5e7eb; padding: 30px 0; margin-top: 40px; text-align: center; color: #9ca3af; font-size: 13px; }
+
+/* Tag Cloud */
+.tag-cloud-widget { margin-bottom: 20px; text-align: center; }
+.tag-cloud-widget h4 { font-size: 14px; color: #666; margin-bottom: 12px; font-weight: 600; }
+.tag-cloud { line-height: 2.2; }
+.tag-cloud-item { display: inline-block; margin: 0 4px; padding: 2px 6px; border-radius: 3px; transition: all 0.2s; text-decoration: none; }
+.tag-cloud-item:hover { background: rgba(37,99,235,0.08); text-decoration: none; transform: scale(1.05); }
+.tag-cloud-empty { color: #bbb; font-size: 13px; }
 
 /* Responsive */
 @media (max-width: 768px) {

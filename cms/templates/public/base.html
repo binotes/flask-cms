@@ -47,6 +47,12 @@
 
     <footer class="site-footer">
         <div class="container">
+            {% if get_tag_cloud is defined %}
+            <div class="footer-widget tag-cloud-widget">
+                <h4>标签云</h4>
+                {{ get_tag_cloud() | safe }}
+            </div>
+            {% endif %}
             <p>&copy; {{ now().year if now is defined else '2024' }} {{ settings.site_name }}. Powered by Flask CMS.</p>
         </div>
     </footer>
