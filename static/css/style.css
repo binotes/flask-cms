@@ -113,7 +113,7 @@ textarea.form-control { resize: vertical; min-height: 100px; }
     position: fixed;
     top: 80px;
     right: 20px;
-    width: 280px;
+    width: 200px;
     max-height: 60vh;
     background: #fff;
     border: 1px solid #e5e7eb;
@@ -126,7 +126,7 @@ textarea.form-control { resize: vertical; min-height: 100px; }
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px 14px;
+    padding: 10px 14px;
     background: #f8f9fa;
     border-bottom: 1px solid #e5e7eb;
     font-size: 13px;
@@ -144,17 +144,17 @@ textarea.form-control { resize: vertical; min-height: 100px; }
     line-height: 1;
 }
 .tag-cloud-body {
-    padding: 10px 12px;
+    padding: 12px 14px;
     overflow-y: auto;
-    max-height: calc(60vh - 38px);
+    max-height: calc(60vh - 40px);
 }
 .tag-cloud {
-    line-height: 2.0;
+    line-height: 2.2;
 }
 .tag-cloud-item {
     display: inline-block;
-    margin: 0 2px;
-    padding: 1px 4px;
+    margin: 0 3px;
+    padding: 2px 5px;
     border-radius: 3px;
     transition: all 0.2s;
     text-decoration: none;

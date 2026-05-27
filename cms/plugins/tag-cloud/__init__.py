@@ -50,10 +50,10 @@ def _compute_tag_cloud():
     range_count = max_count - min_count if max_count > min_count else 1
 
     for t in tag_data:
-        # 字体大小: 10px ~ 22px，线性映射
+        # 字体大小: 12px ~ 36px，线性映射
         ratio = (t['count'] - min_count) / range_count
-        t['font_size'] = round(10 + ratio * 12, 1)
-        # CSS 颜色: 从 #999 渐变到 #2563eb
+        t['font_size'] = round(12 + ratio * 24, 1)
+        # CSS 颜色: 从 #666 渐变到 #1a73e8
         r = int(0x66 + ratio * (0x1a - 0x66))
         g = int(0x66 + ratio * (0x73 - 0x66))
         b = int(0x66 + ratio * (0xe8 - 0x66))
