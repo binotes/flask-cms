@@ -108,13 +108,68 @@ textarea.form-control { resize: vertical; min-height: 100px; }
 /* Footer */
 .site-footer { background: #fff; border-top: 1px solid #e5e7eb; padding: 30px 0; margin-top: 40px; text-align: center; color: #9ca3af; font-size: 13px; }
 
-/* Tag Cloud */
-.tag-cloud-widget { margin-bottom: 20px; text-align: center; }
-.tag-cloud-widget h4 { font-size: 14px; color: #666; margin-bottom: 12px; font-weight: 600; }
-.tag-cloud { line-height: 2.2; }
-.tag-cloud-item { display: inline-block; margin: 0 4px; padding: 2px 6px; border-radius: 3px; transition: all 0.2s; text-decoration: none; }
-.tag-cloud-item:hover { background: rgba(37,99,235,0.08); text-decoration: none; transform: scale(1.05); }
+/* Tag Cloud — 浮动右上角 */
+.tag-cloud-float {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    width: 200px;
+    max-height: 60vh;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    z-index: 1000;
+    overflow: hidden;
+}
+.tag-cloud-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 13px;
+    font-weight: 600;
+    color: #444;
+    cursor: pointer;
+    user-select: none;
+}
+.tag-cloud-header:hover {
+    background: #f0f1f3;
+}
+.tag-cloud-toggle {
+    font-size: 16px;
+    color: #999;
+    line-height: 1;
+}
+.tag-cloud-body {
+    padding: 12px 14px;
+    overflow-y: auto;
+    max-height: calc(60vh - 40px);
+}
+.tag-cloud {
+    line-height: 2.2;
+}
+.tag-cloud-item {
+    display: inline-block;
+    margin: 0 3px;
+    padding: 2px 5px;
+    border-radius: 3px;
+    transition: all 0.2s;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.tag-cloud-item:hover {
+    background: rgba(37,99,235,0.08);
+    text-decoration: none;
+    transform: scale(1.05);
+}
 .tag-cloud-empty { color: #bbb; font-size: 13px; }
+
+@media (max-width: 768px) {
+    .tag-cloud-float { display: none; }
+}
 
 /* Responsive */
 @media (max-width: 768px) {

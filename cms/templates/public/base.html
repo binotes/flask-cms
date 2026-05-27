@@ -45,14 +45,33 @@
         {% block content %}{% endblock %}
     </main>
 
+    {% if get_tag_cloud is defined %}
+    <div class="tag-cloud-float" id="tagCloudFloat">
+        <div class="tag-cloud-header" onclick="toggleTagCloud()">
+            <span>标签云</span>
+            <span class="tag-cloud-toggle">−</span>
+        </div>
+        <div class="tag-cloud-body">
+            {{ get_tag_cloud() | safe }}
+        </div>
+    </div>
+    <script>
+    function toggleTagCloud(){
+        var body = document.querySelector('#tagCloudFloat .tag-cloud-body');
+        var toggle = document.querySelector('#tagCloudFloat .tag-cloud-toggle');
+        if(body.style.display === 'none'){
+            body.style.display = '';
+            toggle.textContent = '−';
+        } else {
+            body.style.display = 'none';
+            toggle.textContent = '+';
+        }
+    }
+    </script>
+    {% endif %}
+
     <footer class="site-footer">
         <div class="container">
-            {% if get_tag_cloud is defined %}
-            <div class="footer-widget tag-cloud-widget">
-                <h4>标签云</h4>
-                {{ get_tag_cloud() | safe }}
-            </div>
-            {% endif %}
             <p>&copy; {{ now().year if now is defined else '2024' }} {{ settings.site_name }}. Powered by Flask CMS.</p>
         </div>
     </footer>
