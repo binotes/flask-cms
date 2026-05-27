@@ -13,6 +13,9 @@
             <a href="{{ url_for('public.tag_archive', slug=tag.slug) }}" class="tag">{{ tag.name }}</a>
         {% endfor %}
         </span>
+        {% if get_post_views is defined %}
+        <span>阅读: {{ get_post_views(post.id) }}</span>
+        {% endif %}
     </div>
     <div class="post-content markdown-body">
         {{ post.content|safe }}

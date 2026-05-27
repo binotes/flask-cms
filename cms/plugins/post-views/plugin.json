@@ -1,0 +1,6 @@
+{
+    "name": "post-views",
+    "version": "1.0.0",
+    "description": "文章阅读量统计 — 自动记录每篇文章的浏览次数，并在前台显示",
+    "author": "Flask CMS Team"
+}
