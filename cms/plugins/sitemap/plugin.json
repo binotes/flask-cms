@@ -1,0 +1,7 @@
+{
+    "name": "sitemap",
+    "version": "1.0.0",
+    "description": "自动生成 sitemap.xml，方便搜索引擎抓取所有公开文章和页面",
+    "author": "Flask CMS Team",
+    "hooks": ["app_started"]
+}

@@ -148,10 +148,31 @@ def create_app(config_class=Config):
 
     # Load active plugins from settings
     with app.app_context():
-        from cms.plugin_manager import load_all_active
+        from cms.plugin_manager import load_all_active, discover_plugins
         loaded = load_all_active()
         if loaded:
             print(f'[CMS] Plugins loaded: {", ".join(loaded)}')
+        # Auto-activate plugins that exist on disk but not yet in DB
+        all_discovered = [p['name'] for p in discover_plugins()]
+        if all_discovered:
+            from cms.models import Setting
+            current = Setting.get('active_plugins', '[]')
+            import json
+            try:
+                active_list = json.loads(current)
+            except json.JSONDecodeError:
+                active_list = []
+            changed = False
+            for name in all_discovered:
+                if name not in active_list:
+                    from cms.plugin_manager import load_plugin
+                    if load_plugin(name):
+                        active_list.append(name)
+                        print(f'[CMS] Plugin auto-activated: {name}')
+                        changed = True
+            if changed and not loaded:
+                from cms.plugin_manager import save_active_plugins
+                save_active_plugins(active_list)
 
     # Fire app_started hook so plugins can react
     with app.app_context():
