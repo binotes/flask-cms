@@ -36,6 +36,12 @@
             {% endfor %}
             </ul>
         </div>
+        {% if get_tag_cloud is defined %}
+        <div class="widget tag-cloud-widget">
+            <h3>标签云</h3>
+            {{ get_tag_cloud() | safe }}
+        </div>
+        {% endif %}
     </aside>
 </div>
 {% endblock %}
