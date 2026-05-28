@@ -33,3 +33,6 @@ Thumbs.db
 
 # Compiled templates
 *.pyc
+
+# Local docs
+roadmap.md
