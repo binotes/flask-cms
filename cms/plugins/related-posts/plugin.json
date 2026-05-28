@@ -1,0 +1,6 @@
+{
+    "name": "related-posts",
+    "version": "1.0.0",
+    "description": "相关文章推荐 — 根据共同分类和标签，在文章底部自动推荐相关文章",
+    "author": "Flask CMS"
+}

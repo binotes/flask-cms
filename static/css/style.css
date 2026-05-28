@@ -54,6 +54,14 @@ a:hover { text-decoration: underline; }
 .tag { display: inline-block; background: #f3f4f6; color: #555; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-size: 12px; }
 
 /* Comments */
+.related-posts { margin-top: 30px; padding-top: 20px; border-top: 2px solid #e5e7eb; }
+.related-posts h3 { font-size: 18px; margin-bottom: 15px; }
+.related-list { display: flex; flex-direction: column; gap: 8px; }
+.related-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: #f9fafb; border-radius: 6px; text-decoration: none; transition: background 0.2s; }
+.related-item:hover { background: #f0f2f5; text-decoration: none; }
+.related-title { color: #333; font-size: 14px; font-weight: 500; flex: 1; }
+.related-date { color: #999; font-size: 12px; margin-left: 12px; white-space: nowrap; }
+
 .comments-section { margin-top: 40px; padding-top: 30px; border-top: 2px solid #e5e7eb; }
 .comments-section h3 { margin-bottom: 20px; }
 .comment { background: #f9fafb; padding: 15px; border-radius: 6px; margin-bottom: 12px; }
