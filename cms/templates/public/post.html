@@ -55,6 +55,17 @@
     </section>
     {% endif %}
 </article>
+{% if get_meta is defined and get_meta_all(post) %}
+{% set meta_dict = get_meta_all(post) %}
+<div class="custom-fields-display">
+    <h4>元数据</h4>
+    <dl class="meta-list">
+    {% for key, value in meta_dict.items() %}
+        <dt>{{ key }}</dt><dd>{{ value }}</dd>
+    {% endfor %}
+    </dl>
+</div>
+{% endif %}
 {% if get_related_posts is defined %}
 {% set related = get_related_posts(post) %}
 {% if related %}

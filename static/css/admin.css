@@ -122,3 +122,25 @@ textarea.form-control { min-height: 300px; font-family: 'SF Mono', 'Consolas', m
     .dashboard-grid { grid-template-columns: 1fr; }
     .stats-grid { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* ─── Custom Fields Editor ─────────────────────────────────────── */
+.custom-fields-card { margin-top: 25px; }
+.custom-fields-card .card-header { background: #f8fafc; padding: 12px 16px; border-bottom: 1px solid #e5e7eb; }
+.custom-fields-card .card-header h3 { margin: 0; font-size: 15px; font-weight: 600; }
+.custom-fields-card .card-body { padding: 16px; }
+.field-desc { font-size: 12px; color: #9ca3af; margin-bottom: 12px; }
+.custom-fields-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+.custom-fields-table th { background: #f3f4f6; padding: 8px 10px; font-size: 12px; font-weight: 600; color: #555; text-align: left; border-bottom: 2px solid #e5e7eb; }
+.custom-fields-table td { padding: 8px 10px; border-bottom: 1px solid #f3f4f6; font-size: 13px; vertical-align: middle; }
+.custom-fields-table tr:hover { background: #fafbfc; }
+.cf-key { font-family: 'SF Mono', 'Consolas', monospace; font-size: 12px; color: #1e40af; }
+.cf-value-text { display: inline-block; max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cf-edit-input { width: 90%; padding: 4px 8px; border: 1px solid #2563eb; border-radius: 4px; font-size: 13px; }
+.cf-key-col { width: 25%; }
+.cf-value-col { width: 50%; }
+.cf-actions-col { width: 25%; white-space: nowrap; }
+.cf-actions .btn { margin: 1px; }
+.cf-add-row { background: #f9fafb; padding: 12px; border-radius: 6px; border: 1px dashed #d1d5db; }
+.cf-add-row h4 { font-size: 13px; font-weight: 600; margin-bottom: 8px; color: #374151; }
+.cf-add-form { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.cf-add-form .form-control { padding: 6px 10px; font-size: 13px; }

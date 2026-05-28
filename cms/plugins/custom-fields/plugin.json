@@ -1,0 +1,6 @@
+{
+    "name": "custom-fields",
+    "version": "1.0.0",
+    "description": "自定义字段 (Post Meta) — 为文章和页面添加任意键值对元数据，类似 WordPress 自定义字段",
+    "author": "Flask CMS"
+}
