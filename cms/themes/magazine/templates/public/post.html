@@ -1,0 +1,94 @@
+{% extends 'public/base.html' %}
+{% block content %}
+<article class="post-detail-wrap">
+    {% if post.category %}<span class="category-badge">{{ post.category.name }}</span>{% endif %}
+    <h1>{{ post.title }}</h1>
+    <div class="post-meta-bar">
+        <span>作者: {{ post.author.display_name or post.author.username }}</span>
+        <span>发布日期: {{ post.published_at.strftime('%Y-%m-%d %H:%M') }}</span>
+        {% if get_post_views is defined %}<span>阅读: {{ get_post_views(post.id) }}</span>{% endif %}
+    </div>
+
+    {% if post.featured_image %}
+    <div style="margin-bottom:25px;border-radius:10px;overflow:hidden;">
+        <img src="{{ url_for('static', filename='media/' + post.featured_image) }}" style="width:100%;max-height:450px;object-fit:cover;">
+    </div>
+    {% endif %}
+
+    <div class="post-content markdown-body">
+        {{ post.content|safe }}
+    </div>
+
+    {% if post.tags %}
+    <div style="margin-top:30px;padding-top:20px;border-top:1px solid #eee;">
+        {% for tag in post.tags %}
+        <a href="{{ url_for('public.tag_archive', slug=tag.slug) }}" style="display:inline-block;padding:4px 12px;margin:2px 3px;background:#f0f0f0;border-radius:20px;color:#555;text-decoration:none;font-size:0.85em;">#{{ tag.name }}</a>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if get_meta is defined and get_meta_all(post) %}
+    {% set meta_dict = get_meta_all(post) %}
+    <div class="custom-fields-display">
+        <h4>元数据</h4>
+        <dl class="meta-list">
+        {% for key, value in meta_dict.items() %}
+            <dt>{{ key }}</dt><dd>{{ value }}</dd>
+        {% endfor %}
+        </dl>
+    </div>
+    {% endif %}
+
+    {% if get_related_posts is defined %}
+    {% set related = get_related_posts(post) %}
+    {% if related %}
+    <div style="margin-top:35px;padding-top:25px;border-top:2px solid #1a1a2e;">
+        <h3 style="font-family:'Playfair Display',serif;font-size:1.3em;margin-bottom:15px;">更多文章</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">
+            {% for rp in related %}
+            <a href="{{ url_for('public.post_detail', slug=rp.slug) }}" style="padding:15px;background:#f9f9f9;border-radius:8px;text-decoration:none;transition:background 0.2s;">
+                <div style="font-size:0.95em;font-weight:600;color:#1a1a2e;margin-bottom:4px;">{{ rp.title }}</div>
+                <div style="font-size:0.8em;color:#999;">{{ rp.published_at.strftime('%m-%d') }}</div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    {% endif %}
+
+    {% if post.comment_status == 'open' %}
+    <section style="margin-top:35px;padding-top:25px;border-top:1px solid #eee;">
+        <h3 style="font-family:'Playfair Display',serif;font-size:1.2em;margin-bottom:15px;">评论 ({{ post.comments.filter_by(status='approved').count() }})</h3>
+        {% for comment in post.comments %}
+        {% if comment.status == 'approved' %}
+        <div style="padding:12px 0;border-bottom:1px solid #f3f3f3;">
+            <div style="font-weight:600;font-size:0.9em;">{{ comment.author_name or '匿名' }}</div>
+            <div style="color:#999;font-size:0.8em;">{{ comment.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
+            <div style="margin-top:5px;line-height:1.6;">{{ comment.content }}</div>
+        </div>
+        {% endif %}
+        {% else %}
+        <p style="color:#999;font-size:0.9em;">暂无评论</p>
+        {% endfor %}
+        <div style="margin-top:20px;">
+            <h4 style="font-size:1em;margin-bottom:10px;">发表评论</h4>
+            <form method="POST" action="{{ url_for('public.submit_comment', post_id=post.id) }}">
+                {{ form.hidden_tag() }}
+                {% if not current_user.is_authenticated %}
+                <div class="form-group">
+                    {{ form.author_name.label }} {{ form.author_name(class='form-control', placeholder='您的称呼') }}
+                </div>
+                <div class="form-group">
+                    {{ form.author_email.label }} {{ form.author_email(class='form-control', placeholder='your@email.com') }}
+                </div>
+                {% endif %}
+                <div class="form-group">
+                    {{ form.content.label }} {{ form.content(class='form-control', rows=5) }}
+                </div>
+                <button type="submit" style="padding:8px 20px;background:#e94560;color:#fff;border:none;border-radius:6px;cursor:pointer;">提交评论</button>
+            </form>
+        </div>
+    </section>
+    {% endif %}
+</article>
+{% endblock %}

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if title %}{{ title }} - {% endif %}{{ settings.site_name or 'Docs' }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, sans-serif; color: #1a1a2e; background: #fff; }
+        .docs-wrap { display: flex; min-height: 100vh; }
+
+        /* Sidebar */
+        .docs-sidebar { width: 280px; flex-shrink: 0; background: #f8f9fa; border-right: 1px solid #e5e7eb; display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+        .docs-sidebar-header { padding: 20px; border-bottom: 1px solid #e5e7eb; }
+        .docs-sidebar-header h2 { font-size: 1.1em; font-weight: 700; }
+        .docs-sidebar-header h2 a { color: #1a1a2e; text-decoration: none; }
+        .docs-sidebar-header .version { font-size: 0.75em; color: #999; margin-top: 2px; }
+        .docs-nav { flex: 1; padding: 10px 0; }
+        .docs-nav-section { margin-bottom: 5px; }
+        .docs-nav-section-title { padding: 8px 20px; font-size: 0.75em; font-weight: 600; color: #999; text-transform: uppercase; letter-spacing: 1px; }
+        .docs-nav a { display: block; padding: 7px 20px 7px 24px; color: #444; text-decoration: none; font-size: 0.88em; border-left: 2px solid transparent; transition: all 0.15s; }
+        .docs-nav a:hover { color: #2563eb; background: rgba(37,99,235,0.04); }
+        .docs-nav a.active { color: #2563eb; border-left-color: #2563eb; background: rgba(37,99,235,0.06); font-weight: 500; }
+        .docs-sidebar-footer { padding: 15px 20px; border-top: 1px solid #e5e7eb; font-size: 0.8em; color: #999; }
+        .docs-sidebar-footer a { color: #666; text-decoration: none; }
+
+        /* Main content */
+        .docs-main { flex: 1; min-width: 0; }
+        .docs-topbar { padding: 12px 40px; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; background: #fff; position: sticky; top: 0; z-index: 10; }
+        .docs-breadcrumb { font-size: 0.85em; color: #999; }
+        .docs-breadcrumb a { color: #2563eb; text-decoration: none; }
+        .docs-breadcrumb a:hover { text-decoration: underline; }
+        .docs-topbar-right { display: flex; gap: 15px; align-items: center; }
+        .docs-topbar-right a { color: #666; text-decoration: none; font-size: 0.85em; }
+        .docs-topbar-right a:hover { color: #2563eb; }
+        .docs-search { display: flex; }
+        .docs-search input { padding: 6px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 0.85em; width: 200px; outline: none; }
+        .docs-search input:focus { border-color: #2563eb; }
+
+        .docs-content { padding: 40px; max-width: 900px; }
+        .docs-content h1 { font-size: 2.2em; font-weight: 700; margin-bottom: 12px; letter-spacing: -0.5px; }
+        .docs-content .post-meta { color: #999; font-size: 0.9em; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid #e5e7eb; }
+        .docs-content .post-meta span { margin-right: 15px; }
+
+        /* Article list on homepage */
+        .docs-list { max-width: 700px; }
+        .docs-list-item { padding: 20px 0; border-bottom: 1px solid #f3f4f6; }
+        .docs-list-item:last-child { border-bottom: none; }
+        .docs-list-item h2 { font-size: 1.2em; font-weight: 600; }
+        .docs-list-item h2 a { color: #1a1a2e; text-decoration: none; }
+        .docs-list-item h2 a:hover { color: #2563eb; }
+        .docs-list-item .meta { color: #999; font-size: 0.85em; margin-top: 4px; }
+        .docs-list-item .excerpt { color: #666; font-size: 0.9em; margin-top: 8px; line-height: 1.7; }
+
+        /* Post content - reading friendly */
+        .docs-article { max-width: 800px; }
+        .docs-article h1 { font-size: 2em; margin-bottom: 8px; }
+        .docs-article .post-meta { font-size: 0.9em; color: #999; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #e5e7eb; }
+        .docs-article .post-content { font-size: 1em; line-height: 1.8; color: #374151; }
+        .docs-article .post-content h2 { font-size: 1.4em; margin-top: 1.8em; margin-bottom: 0.6em; font-weight: 600; }
+        .docs-article .post-content h3 { font-size: 1.15em; margin-top: 1.5em; margin-bottom: 0.5em; font-weight: 600; }
+        .docs-article .post-content p { margin: 1.2em 0; }
+        .docs-article .post-content code { font-family: 'JetBrains Mono', monospace; background: #f3f4f6; padding: 2px 6px; border-radius: 4px; font-size: 0.9em; color: #e94560; }
+        .docs-article .post-content pre { background: #1e293b; color: #e2e8f0; padding: 20px; border-radius: 8px; overflow-x: auto; font-size: 0.9em; line-height: 1.6; margin: 1.5em 0; }
+        .docs-article .post-content pre code { background: none; color: inherit; padding: 0; }
+        .docs-article .post-content blockquote { border-left: 4px solid #2563eb; padding: 10px 20px; margin: 1.5em 0; background: #f8fafc; color: #555; }
+        .docs-article .post-content img { max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+
+        /* Tags */
+        .docs-tags { margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; }
+        .docs-tags a { display: inline-block; padding: 3px 10px; margin: 2px 3px; background: #f3f4f6; border-radius: 4px; color: #555; text-decoration: none; font-size: 0.82em; }
+        .docs-tags a:hover { background: #2563eb; color: #fff; }
+
+        /* Page detail */
+        .docs-page { max-width: 800px; }
+        .docs-page h1 { font-size: 2em; margin-bottom: 10px; }
+
+        /* Pagination */
+        .docs-pagination { text-align: center; padding: 30px 0; }
+        .docs-pagination a { display: inline-block; padding: 8px 16px; background: #f3f4f6; border-radius: 6px; color: #333; text-decoration: none; font-size: 0.9em; margin: 0 4px; }
+        .docs-pagination a:hover { background: #2563eb; color: #fff; }
+        .docs-pagination span { padding: 8px 12px; color: #999; }
+
+        /* Flash */
+        .flash { padding: 10px 25px; font-size: 0.9em; }
+        .flash-success { background: #ecfdf5; color: #065f46; }
+        .flash-error { background: #fef2f2; color: #991b1b; }
+
+        /* Footer */
+        .docs-footer { border-top: 1px solid #e5e7eb; padding: 30px 40px; color: #999; font-size: 0.85em; }
+        .docs-footer a { color: #2563eb; text-decoration: none; }
+
+        /* Custom fields */
+        .custom-fields-display { margin-top: 25px; padding: 15px; background: #f8fafc; border-radius: 6px; border: 1px solid #e5e7eb; }
+
+        /* Related posts */
+        .docs-related { margin-top: 35px; padding-top: 25px; border-top: 1px solid #e5e7eb; }
+        .docs-related h3 { font-size: 1.1em; margin-bottom: 15px; }
+        .docs-related-list { display: flex; flex-direction: column; gap: 8px; }
+        .docs-related-list a { padding: 10px 14px; background: #f8fafc; border-radius: 6px; text-decoration: none; transition: background 0.2s; }
+        .docs-related-list a:hover { background: #eff6ff; }
+        .docs-related-list .rtitle { color: #2563eb; font-weight: 500; }
+        .docs-related-list .rdate { color: #999; font-size: 0.85em; }
+
+        /* Archive */
+        .archive-header { margin-bottom: 25px; }
+        .archive-header h1 { font-size: 1.6em; font-weight: 700; }
+        .archive-header p { color: #666; margin-top: 5px; }
+
+        /* Comments */
+        .comments-section { margin-top: 35px; padding-top: 25px; border-top: 1px solid #e5e7eb; }
+        .comment { padding: 12px 0; border-bottom: 1px solid #f3f4f6; }
+        .comment-author { font-weight: 600; font-size: 0.9em; }
+        .comment-date { color: #999; font-size: 0.8em; }
+        .comment-content { margin-top: 4px; line-height: 1.6; }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-size: 0.9em; font-weight: 500; margin-bottom: 4px; color: #374151; }
+        .form-group input, .form-group textarea { width: 100%; max-width: 500px; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 0.9em; }
+        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #2563eb; }
+        button[type="submit"] { padding: 8px 20px; background: #2563eb; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9em; }
+        button[type="submit"]:hover { background: #1d4ed8; }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .docs-sidebar { display: none; }
+            .docs-content { padding: 20px; }
+            .docs-topbar { padding: 10px 20px; flex-wrap: wrap; gap: 8px; }
+            .docs-search input { width: 140px; }
+        }
+    </style>
+</head>
+<body>
+<div class="docs-wrap">
+    <aside class="docs-sidebar">
+        <div class="docs-sidebar-header">
+            <h2><a href="{{ url_for('public.home') }}">{{ settings.site_name or 'Docs' }}</a></h2>
+            <div class="version">{{ settings.site_description or 'Documentation' }}</div>
+        </div>
+        <nav class="docs-nav">
+            <div class="docs-nav-section">
+                <div class="docs-nav-section-title">分类</div>
+                {% for cat in categories %}
+                <a href="{{ url_for('public.category_archive', slug=cat.slug) }}" {% if request.endpoint == 'public.category_archive' and request.view_args.slug == cat.slug %}class="active"{% endif %}>{{ cat.name }}</a>
+                {% endfor %}
+                <a href="{{ url_for('public.home') }}" {% if request.endpoint == 'public.home' %}class="active"{% endif %}>全部文章</a>
+            </div>
+        </nav>
+        <div class="docs-sidebar-footer">
+            <a href="{{ url_for('admin.dashboard') }}">⚙️ 管理</a>
+            {% if current_user.is_authenticated %}
+            · <a href="{{ url_for('auth.logout') }}">退出</a>
+            {% else %}
+            · <a href="{{ url_for('auth.login') }}">登录</a>
+            {% endif %}
+        </div>
+    </aside>
+
+    <div class="docs-main">
+        <div class="docs-topbar">
+            <div class="docs-breadcrumb">
+                <a href="{{ url_for('public.home') }}">首页</a>
+                {% block breadcrumb %}{% endblock %}
+            </div>
+            <div class="docs-topbar-right">
+                <form class="docs-search" action="{{ url_for('public.search') }}" method="GET">
+                    <input type="text" name="q" placeholder="搜索文档..." required>
+                </form>
+            </div>
+        </div>
+
+        {% for msg in get_flashed_messages(with_categories=true) %}
+        <div class="flash flash-{{ msg[0] }}">{{ msg[1] }}</div>
+        {% endfor %}
+
+        <div class="docs-content">
+            {% block content %}{% endblock %}
+        </div>
+
+        <footer class="docs-footer">
+            <p>&copy; {{ now().year if now is defined else '2024' }} {{ settings.site_name or 'Docs' }}. Built with Flask CMS.</p>
+        </footer>
+    </div>
+</div>
+</body>
+</html>
