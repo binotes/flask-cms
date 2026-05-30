@@ -35,7 +35,7 @@
                 <a href="{{ url_for('admin.comments_list') }}" class="nav-item {{ 'active' if request.endpoint and 'comment' in request.endpoint }}">
                     💬 评论
                 </a>
-                {% if current_user.is_admin() %}
+                {% if current_user.is_authenticated and current_user.is_admin() %}
                 <a href="{{ url_for('admin.users_list') }}" class="nav-item {{ 'active' if request.endpoint and 'user' in request.endpoint }}">
                     👥 用户
                 </a>
@@ -47,6 +47,9 @@
                 </a>
                 <a href="{{ url_for('admin.settings_page') }}" class="nav-item {{ 'active' if request.endpoint == 'admin.settings_page' }}">
                     ⚙️ 设置
+                </a>
+                <a href="{{ url_for('backup.index') }}" class="nav-item {{ 'active' if request.endpoint and request.endpoint.startswith('backup.') }}">
+                    💾 数据备份
                 </a>
                 {% endif %}
             </nav>

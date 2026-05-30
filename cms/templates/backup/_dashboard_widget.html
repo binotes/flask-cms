@@ -1,0 +1,11 @@
+<div class="card mb-3">
+    <div class="card-header">
+        <h5><i class="fa fa-database"></i> 备份状态</h5>
+    </div>
+    <div class="card-body">
+        <p class="mb-1">总备份数: <strong>{{ count }}</strong></p>
+        {% if latest %}
+        <p class="mb-0">最近备份: <strong>{{ latest.created_at[:19]|replace("T", " ") }}</strong></p>
+        {% endif %}
+    </div>
+</div>

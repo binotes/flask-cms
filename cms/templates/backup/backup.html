@@ -1,0 +1,116 @@
+{% extends "admin/base.html" %}
+{% block title %}数据备份{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2><i class="fa fa-database"></i> 数据备份管理</h2>
+    </div>
+    <div class="card-body">
+        <!-- 操作按钮 -->
+        <div class="mb-4">
+            <form method="POST" action="{{ url_for('backup.create') }}" style="display:inline;">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa fa-download"></i> 创建新备份
+                </button>
+            </form>
+            <a href="{{ url_for('backup.settings') }}" class="btn btn-secondary">
+                <i class="fa fa-cog"></i> 设置
+            </a>
+        </div>
+        
+        <!-- 备份统计 -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="stat-box">
+                    <h3>{{ backups|length }}</h3>
+                    <p>备份数量</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-box">
+                    <h3>{{ "%.2f"|format(total_size / 1024 / 1024) }} MB</h3>
+                    <p>总大小</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-box">
+                    <h3>{{ max_backups }}</h3>
+                    <p>最大保留数</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-box">
+                    <h3>{% if auto_enabled %}已启用{% else %}未启用{% endif %}</h3>
+                    <p>自动备份</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 备份列表 -->
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>时间</th>
+                    <th>包含内容</th>
+                    <th>大小</th>
+                    <th>状态</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for backup in backups %}
+                <tr>
+                    <td>{{ backup.created_at[:19]|replace("T", " ") }}</td>
+                    <td>
+                        {% for type, file in backup.files.items() %}
+                            <span class="badge bg-info">{{ type }}</span>
+                        {% endfor %}
+                    </td>
+                    <td>{{ "%.2f"|format(backup.size / 1024 / 1024) }} MB</td>
+                    <td>
+                        {% if backup.status == 'success' %}
+                            <span class="badge bg-success">成功</span>
+                        {% elif backup.status == 'creating' %}
+                            <span class="badge bg-warning">创建中</span>
+                        {% else %}
+                            <span class="badge bg-danger">失败</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="btn-group btn-group-sm">
+                            {% for type, file in backup.files.items() %}
+                            <a href="{{ url_for('backup.download', backup_id=backup.id, file_type=type) }}" 
+                               class="btn btn-outline-primary" title="下载 {{ type }}">
+                                <i class="fa fa-download"></i>
+                            </a>
+                            {% endfor %}
+                            {% if 'database' in backup.files %}
+                            <form method="POST" action="{{ url_for('backup.restore', backup_id=backup.id) }}" 
+                                  style="display:inline;" onsubmit="return confirm('确定要恢复此备份吗？当前数据将被覆盖！');">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="btn btn-warning btn-sm">
+                                    <i class="fa fa-undo"></i> 恢复
+                                </button>
+                            </form>
+                            {% endif %}
+                            <form method="POST" action="{{ url_for('backup.delete', backup_id=backup.id) }}" 
+                                  style="display:inline;" onsubmit="return confirm('确定要删除此备份吗？');">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    <i class="fa fa-trash"></i> 删除
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="text-center text-muted">暂无备份</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

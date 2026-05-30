@@ -1,0 +1,43 @@
+{% extends "admin/base.html" %}
+{% block title %}备份设置{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2><i class="fa fa-cog"></i> 备份设置</h2>
+    </div>
+    <div class="card-body">
+        <form method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <div class="mb-3">
+                <label class="form-label">最大保留备份数</label>
+                <input type="number" name="max_backups" class="form-control" value="{{ max_backups }}" min="1" max="50">
+                <small class="text-muted">超出数量后自动删除最旧的备份</small>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">
+                    <input type="checkbox" name="auto_backup_enabled" {% if auto_enabled %}checked{% endif %}>
+                    启用自动备份
+                </label>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">备份频率</label>
+                <select name="auto_backup_schedule" class="form-select">
+                    <option value="daily" {% if auto_schedule == 'daily' %}selected{% endif %}>每日</option>
+                    <option value="weekly" {% if auto_schedule == 'weekly' %}selected{% endif %}>每周</option>
+                    <option value="monthly" {% if auto_schedule == 'monthly' %}selected{% endif %}>每月</option>
+                </select>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">备份时间</label>
+                <input type="time" name="auto_backup_time" class="form-control" value="{{ auto_time }}">
+            </div>
+            
+            <button type="submit" class="btn btn-primary">保存设置</button>
+            <a href="{{ url_for('backup.index') }}" class="btn btn-secondary">返回</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

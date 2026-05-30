@@ -94,6 +94,14 @@ def create_app(config_class=Config):
             'theme_static_url': theme_static_url,
         }
 
+    # 注入 CSRF token 到所有模板（使用 Flask-WTF 的 generate_csrf）
+    @app.context_processor
+    def inject_csrf_token():
+        from flask_wtf.csrf import generate_csrf
+        def _csrf_token():
+            return generate_csrf()
+        return {'csrf_token': _csrf_token}
+
     # Error handlers
     @app.errorhandler(404)
     def not_found(e):

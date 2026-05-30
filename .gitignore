@@ -36,3 +36,6 @@ Thumbs.db
 
 # Local docs
 roadmap.md
+
+# Backup files
+cms/plugins/backup_manager/backups/
