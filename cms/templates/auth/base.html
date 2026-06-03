@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}登录{% endblock %} - {{ settings.site_name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap');
+        body { font-family: 'Noto Serif SC', Georgia, serif; color: #1a1a1a; background: #f5f2ed; margin: 0; }
+        body.auth-page {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #f5f2ed;
+        }
+        .auth-container {
+            background: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            width: 400px;
+            max-width: 95%;
+        }
+        .auth-container h1 {
+            text-align: center;
+            font-size: 2.2em;
+            margin: 0 0 5px;
+            color: #1a1a2e;
+        }
+        .auth-container h2 {
+            text-align: center;
+            font-size: 1.2em;
+            color: #666;
+            margin-bottom: 25px;
+            font-weight: 400;
+        }
+        .flash-messages {
+            margin-bottom: 20px;
+        }
+        .flash {
+            padding: 12px 15px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        .flash-success { background: #d1fae5; color: #065f46; }
+        .flash-error { background: #fee2e2; color: #991b1b; }
+        .flash-info { background: #dbeafe; color: #1e40af; }
+        .form-group { margin-bottom: 18px; }
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 6px;
+            font-size: 14px;
+            color: #333;
+        }
+        .form-control {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 15px;
+            transition: border-color 0.2s;
+            box-sizing: border-box;
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: #1a1a2e;
+            box-shadow: 0 0 0 3px rgba(26,26,46,0.1);
+        }
+        .checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .checkbox input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        .checkbox label {
+            margin: 0;
+            font-weight: normal;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.2s;
+            min-height: 44px;
+        }
+        .btn-primary {
+            background: #1a1a2e;
+            color: #fff;
+            width: 100%;
+        }
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+        .auth-links {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+        .auth-links a {
+            color: #1a1a2e;
+            font-weight: 500;
+        }
+        .auth-links a:hover {
+            text-decoration: underline;
+        }
+        .auth-footer-link {
+            text-align: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        .auth-footer-link a {
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* ============================================
+           移动端适配 - 登录/注册页
+           ============================================ */
+        @media (max-width: 480px) {
+            .auth-container {
+                padding: 25px 20px;
+            }
+            .auth-container h1 {
+                font-size: 1.8em;
+            }
+            .auth-container h2 {
+                font-size: 1.1em;
+                margin-bottom: 20px;
+            }
+            .form-control {
+                padding: 12px;
+                font-size: 16px; /* 防止 iOS 缩放 */
+            }
+            .btn {
+                padding: 14px 20px;
+                font-size: 16px;
+            }
+            .auth-links {
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body class="auth-page">
+    <div class="auth-container">
+        <h1>{{ settings.site_name }}</h1>
+        <h2>{% block page_title %}登录{% endblock %}</h2>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-messages">
+            {% for category, message in messages %}
+            <div class="flash flash-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            {% block form_fields %}{% endblock %}
+            <button type="submit" class="btn btn-primary">{% block submit_text %}登录{% endblock %}</button>
+        </form>
+        <p class="auth-links">{% block auth_links %}{% endblock %}</p>
+        <p class="auth-footer-link"><a href="{{ url_for('public.home') }}">← 返回首页</a></p>
+    </div>
+</body>
+</html>

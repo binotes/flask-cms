@@ -1,0 +1,6 @@
+{
+    "name": "rss-feed",
+    "version": "1.0.0",
+    "description": "RSS Feed — 自动生成 /feed.xml，提供标准 RSS 2.0 订阅源，支持所有公开文章",
+    "author": "Flask CMS"
+}

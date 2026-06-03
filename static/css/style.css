@@ -182,14 +182,391 @@ textarea.form-control { resize: vertical; min-height: 100px; }
 }
 .tag-cloud-empty { color: #bbb; font-size: 13px; }
 
+/* ============================================
+   移动端适配 - 增强版
+   ============================================ */
+
+/* 基础触摸优化 */
 @media (max-width: 768px) {
-    .tag-cloud-float { display: none; }
+    /* 增大触摸目标 */
+    a, button, .btn, input, select, textarea {
+        min-height: 44px; /* iOS 推荐最小触摸目标 */
+    }
+    
+    /* 防止双击缩放 */
+    * {
+        touch-action: manipulation;
+    }
 }
 
-/* Responsive */
+/* 平板适配 (768px) */
 @media (max-width: 768px) {
-    .site-header .container { flex-wrap: wrap; }
-    .post-card { flex-direction: column; }
-    .post-image img { width: 100%; height: auto; }
-    .auth-container { width: 90%; margin: 20px; }
+    .tag-cloud-float { display: none; }
+    
+    /* Header 汉堡菜单 */
+    .site-header .container {
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+    
+    .main-nav {
+        display: none; /* 默认隐藏，由 JS 控制显示 */
+        width: 100%;
+        flex-direction: column;
+        gap: 0;
+        background: #fff;
+        border-top: 1px solid #e5e7eb;
+        padding: 10px 0;
+        margin-top: 10px;
+    }
+    
+    .main-nav.active {
+        display: flex;
+    }
+    
+    .main-nav a {
+        padding: 12px 20px;
+        display: block;
+        border-bottom: 1px solid #f3f4f6;
+    }
+    
+    .main-nav a:last-child {
+        border-bottom: none;
+    }
+    
+    /* 汉堡菜单按钮 */
+    .mobile-menu-toggle {
+        display: flex !important;
+        flex-direction: column;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        margin-left: 10px;
+    }
+    
+    .mobile-menu-toggle .bar {
+        width: 24px;
+        height: 3px;
+        background: #333;
+        margin: 5px 0;
+        border-radius: 2px;
+        transition: all 0.3s ease;
+    }
+    
+    .mobile-menu-toggle.active .bar:nth-child(1) {
+        transform: translateY(8px) rotate(45deg);
+    }
+    
+    .mobile-menu-toggle.active .bar:nth-child(2) {
+        opacity: 0;
+    }
+    
+    .mobile-menu-toggle.active .bar:nth-child(3) {
+        transform: translateY(-8px) rotate(-45deg);
+    }
+    
+    /* 搜索框 */
+    .search-form {
+        width: 100%;
+        margin-top: 10px;
+    }
+    
+    .search-form input {
+        flex: 1;
+        width: auto;
+        min-width: 0;
+    }
+    
+    .search-form button {
+        padding: 6px 16px;
+    }
+    
+    /* Post Card */
+    .post-card {
+        flex-direction: column;
+        padding: 20px;
+    }
+    
+    .post-image img {
+        width: 100%;
+        height: auto;
+        max-height: 200px;
+    }
+    
+    .post-content h2 {
+        font-size: 18px;
+    }
+    
+    .post-meta {
+        flex-direction: column;
+        gap: 5px;
+        font-size: 12px;
+    }
+    
+    /* Post Detail */
+    .post-detail {
+        padding: 20px;
+        margin: 15px 0;
+        border-radius: 8px;
+    }
+    
+    .post-detail h1 {
+        font-size: 22px;
+        margin-bottom: 12px;
+    }
+    
+    .post-content {
+        font-size: 15px;
+        line-height: 1.7;
+        margin: 20px 0;
+    }
+    
+    .post-meta {
+        flex-direction: column;
+        gap: 8px;
+        font-size: 12px;
+    }
+    
+    .tag {
+        display: inline-block;
+        margin: 2px 4px 2px 0;
+        padding: 2px 6px;
+    }
+    
+    /* Comments */
+    .comments-section {
+        padding-top: 20px;
+        margin-top: 25px;
+    }
+    
+    .comments-section h3 {
+        font-size: 16px;
+    }
+    
+    .comment {
+        padding: 12px;
+        margin-bottom: 10px;
+    }
+    
+    .comment-author {
+        font-size: 13px;
+    }
+    
+    .comment-date {
+        font-size: 11px;
+    }
+    
+    .comment-form {
+        margin-top: 20px;
+    }
+    
+    .comment-form h4 {
+        font-size: 14px;
+        margin-bottom: 12px;
+    }
+    
+    /* Related Posts */
+    .related-posts {
+        padding-top: 15px;
+        margin-top: 20px;
+    }
+    
+    .related-posts h3 {
+        font-size: 16px;
+        margin-bottom: 12px;
+    }
+    
+    .related-item {
+        padding: 10px 12px;
+    }
+    
+    .related-title {
+        font-size: 13px;
+    }
+    
+    .related-date {
+        font-size: 11px;
+        margin-left: 8px;
+    }
+    
+    /* Custom Fields */
+    .custom-fields-display {
+        padding: 10px 12px;
+        margin-top: 15px;
+    }
+    
+    .custom-fields-display h4 {
+        font-size: 13px;
+    }
+    
+    .meta-list {
+        font-size: 12px;
+        gap: 2px 8px;
+    }
+    
+    /* Pagination */
+    .pagination {
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 20px 0;
+    }
+    
+    .pagination .btn {
+        padding: 8px 16px;
+        font-size: 13px;
+    }
+    
+    .page-info {
+        font-size: 12px;
+        width: 100%;
+        text-align: center;
+        order: -1;
+        margin-bottom: 10px;
+    }
+    
+    /* Hero */
+    .hero {
+        padding: 40px 0 30px;
+    }
+    
+    .hero h1 {
+        font-size: 26px;
+    }
+    
+    .hero p {
+        font-size: 15px;
+    }
+    
+    /* Archive */
+    .archive-header {
+        padding: 20px 0;
+    }
+    
+    .archive-header h1 {
+        font-size: 22px;
+    }
+    
+    /* Auth Pages */
+    .auth-container {
+        width: 95%;
+        margin: 15px;
+        padding: 25px;
+    }
+    
+    .auth-container h1 {
+        font-size: 24px;
+    }
+    
+    .auth-container h2 {
+        font-size: 15px;
+        margin-bottom: 20px;
+    }
+    
+    .form-control {
+        padding: 12px;
+        font-size: 15px;
+    }
+    
+    /* Footer */
+    .site-footer {
+        padding: 20px 0;
+        font-size: 12px;
+    }
+    
+    /* Flash Messages */
+    .flash {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+    
+    /* Empty State */
+    .empty-state {
+        padding: 40px 0;
+    }
+    
+    .empty-state h2 {
+        font-size: 18px;
+    }
+    
+    /* Error Pages */
+    .error-page {
+        padding: 60px 0;
+    }
+    
+    .error-page h1 {
+        font-size: 48px;
+    }
+    
+    .error-page p {
+        font-size: 15px;
+    }
+    
+    /* 隐藏桌面端元素 */
+    .desktop-only {
+        display: none !important;
+    }
+    
+    /* 显示移动端元素 */
+    .mobile-only {
+        display: block !important;
+    }
+}
+
+/* 手机小屏适配 (480px) */
+@media (max-width: 480px) {
+    .container {
+        padding: 0 15px;
+    }
+    
+    .site-header {
+        padding: 10px 0;
+    }
+    
+    .logo {
+        font-size: 20px;
+    }
+    
+    .post-card {
+        padding: 15px;
+    }
+    
+    .post-detail {
+        padding: 15px;
+    }
+    
+    .post-detail h1 {
+        font-size: 20px;
+    }
+    
+    .btn {
+        padding: 10px 16px;
+        font-size: 14px;
+    }
+    
+    .btn-block {
+        width: 100%;
+    }
+    
+    .pagination .btn {
+        flex: 1;
+        text-align: center;
+        min-width: 80px;
+    }
+    
+    .page-info {
+        width: 100%;
+        order: -1;
+        margin-bottom: 10px;
+    }
+}
+
+/* 超大屏优化 */
+@media (min-width: 1400px) {
+    .container {
+        max-width: 1200px;
+    }
 }

@@ -12,7 +12,12 @@
             <div class="logo">
                 <a href="{{ url_for('public.home') }}">{{ settings.site_name }}</a>
             </div>
-            <nav class="main-nav">
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()" aria-label="菜单">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+            <nav class="main-nav" id="mainNav">
                 <a href="{{ url_for('public.home') }}">首页</a>
                 {% for cat in categories %}
                 <a href="{{ url_for('public.category_archive', slug=cat.slug) }}">{{ cat.name }}</a>
@@ -56,6 +61,40 @@
         </div>
     </div>
     <script>
+    // 移动端菜单切换
+    function toggleMobileMenu() {
+        var nav = document.getElementById('mainNav');
+        var toggle = document.querySelector('.mobile-menu-toggle');
+        nav.classList.toggle('active');
+        toggle.classList.toggle('active');
+    }
+    
+    // 点击导航链接后自动关闭菜单（移动端体验优化）
+    document.addEventListener('DOMContentLoaded', function() {
+        var navLinks = document.querySelectorAll('.main-nav a');
+        navLinks.forEach(function(link) {
+            link.addEventListener('click', function() {
+                var nav = document.getElementById('mainNav');
+                var toggle = document.querySelector('.mobile-menu-toggle');
+                if (nav.classList.contains('active')) {
+                    nav.classList.remove('active');
+                    toggle.classList.remove('active');
+                }
+            });
+        });
+        
+        // 点击页面其他区域关闭菜单
+        document.addEventListener('click', function(e) {
+            var nav = document.getElementById('mainNav');
+            var toggle = document.querySelector('.mobile-menu-toggle');
+            var header = document.querySelector('.site-header');
+            if (nav.classList.contains('active') && !header.contains(e.target)) {
+                nav.classList.remove('active');
+                toggle.classList.remove('active');
+            }
+        });
+    });
+    
     function toggleTagCloud(){
         var body = document.querySelector('#tagCloudFloat .tag-cloud-body');
         var toggle = document.querySelector('#tagCloudFloat .tag-cloud-toggle');
