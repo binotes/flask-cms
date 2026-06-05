@@ -14,7 +14,7 @@
             <span>{{ post.author.display_name }}</span>
             <span>{{ post.published_at.strftime('%Y-%m-%d') }}</span>
         </div>
-        <p>{{ post.excerpt or post.content[:200] }}{% if post.content|length > 200 %}...{% endif %}</p>
+        <p>{{ post.excerpt or post.content|markdown_excerpt(200) }}</p>
     </article>
     {% else %}
     {% if query %}

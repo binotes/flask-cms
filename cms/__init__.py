@@ -94,6 +94,26 @@ def create_app(config_class=Config):
             'theme_static_url': theme_static_url,
         }
 
+    # 注册 Markdown 渲染过滤器
+    import markdown as _md
+    @app.template_filter('markdown')
+    def render_markdown(text):
+        if not text:
+            return ''
+        return _md.markdown(text, extensions=['fenced_code', 'codehilite', 'tables', 'nl2br'])
+
+    @app.template_filter('markdown_excerpt')
+    def render_markdown_excerpt(text, length=200):
+        if not text:
+            return ''
+        html = _md.markdown(text, extensions=['fenced_code', 'codehilite', 'tables', 'nl2br'])
+        # 去掉 HTML 标签
+        import re as _re
+        plain = _re.sub(r'<[^>]+>', '', html).strip()
+        if len(plain) > length:
+            plain = plain[:length] + '...'
+        return plain
+
     # 注入 CSRF token 到所有模板（使用 Flask-WTF 的 generate_csrf）
     @app.context_processor
     def inject_csrf_token():

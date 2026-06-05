@@ -9,7 +9,7 @@
             <span>{{ post.published_at.strftime('%Y-%m-%d') }}</span>
             {% if post.category %}<span> · {{ post.category.name }}</span>{% endif %}
         </div>
-        <p>{{ post.excerpt or post.content[:200] }}{% if post.content|length > 200 %}...{% endif %}</p>
+        <p>{{ post.excerpt or post.content|markdown_excerpt(200) }}</p>
     </article>
 {% else %}
     <p style="text-align:center;color:#999;padding:60px 0;">暂无文章</p>

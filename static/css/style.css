@@ -570,3 +570,23 @@ textarea.form-control { resize: vertical; min-height: 100px; }
         max-width: 1200px;
     }
 }
+
+/* Markdown 渲染样式 */
+.markdown-body h1 { font-size: 1.8em; margin: 0.8em 0 0.4em; border-bottom: 1px solid #eee; padding-bottom: 0.3em; }
+.markdown-body h2 { font-size: 1.5em; margin: 0.8em 0 0.4em; border-bottom: 1px solid #eee; padding-bottom: 0.2em; }
+.markdown-body h3 { font-size: 1.3em; margin: 0.7em 0 0.3em; }
+.markdown-body h4 { font-size: 1.15em; margin: 0.6em 0 0.3em; }
+.markdown-body p { margin: 0.5em 0; line-height: 1.8; }
+.markdown-body ul, .markdown-body ol { margin: 0.5em 0; padding-left: 2em; }
+.markdown-body li { margin: 0.3em 0; }
+.markdown-body blockquote { margin: 0.8em 0; padding: 0.5em 1em; border-left: 4px solid #2563eb; background: #f8f9fa; color: #555; }
+.markdown-body code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 0.9em; font-family: 'Fira Code', 'Consolas', monospace; }
+.markdown-body pre { background: #1e293b; color: #e2e8f0; padding: 16px; border-radius: 8px; overflow-x: auto; margin: 0.8em 0; font-size: 0.9em; line-height: 1.5; }
+.markdown-body pre code { background: none; padding: 0; color: inherit; font-size: inherit; }
+.markdown-body table { border-collapse: collapse; width: 100%; margin: 0.8em 0; }
+.markdown-body th, .markdown-body td { border: 1px solid #d1d5db; padding: 8px 12px; text-align: left; }
+.markdown-body th { background: #f8f9fa; font-weight: 600; }
+.markdown-body img { max-width: 100%; height: auto; border-radius: 8px; margin: 0.8em 0; }
+.markdown-body hr { border: none; border-top: 1px solid #e5e7eb; margin: 1.5em 0; }
+.markdown-body a { color: #2563eb; }
+.markdown-body a:hover { text-decoration: underline; }

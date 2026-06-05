@@ -8,7 +8,7 @@
         <span>{{ post.published_at.strftime('%Y-%m-%d') }}</span>
         {% if post.category %}<span><a href="{{ url_for('public.category_archive', slug=post.category.slug) }}" class="tag">{{ post.category.name }}</a></span>{% endif %}
     </div>
-    <p>{{ post.excerpt or post.content[:250] }}{% if post.content|length > 250 %}...{% endif %}</p>
+    <p>{{ post.excerpt or post.content|markdown_excerpt(250) }}</p>
     {% if post.tags %}<div>{% for tag in post.tags %}<a href="{{ url_for('public.tag_archive', slug=tag.slug) }}" class="tag">#{{ tag.name }}</a> {% endfor %}</div>{% endif %}
 </div>
 {% else %}

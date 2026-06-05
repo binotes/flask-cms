@@ -18,7 +18,7 @@
         {% endif %}
     </div>
     <div class="post-content markdown-body">
-        {{ post.content|safe }}
+        {{ post.content|markdown|safe }}
     </div>
     {% if post.comment_status == 'open' %}
     <section class="comments-section">
