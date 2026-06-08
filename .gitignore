@@ -35,7 +35,7 @@ Thumbs.db
 *.pyc
 
 # Local docs
-roadmap.md
+*.md
 
 # Backup files
 cms/plugins/backup_manager/backups/
